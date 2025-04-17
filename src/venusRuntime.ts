@@ -197,8 +197,11 @@ export class VenusRuntime extends EventEmitter {
 
 	/** Creates a sourceLine identifier for debugging: C://exampledir/example.file:5 5 == linenumber */
 	private createSourcelineString(path: string, line: number): string {
-		const firstChar = path.charAt(0);
-		path = (firstChar.toLowerCase() === firstChar.toUpperCase()) ? path : firstChar.toUpperCase() + path.slice(1);
+		// 首字母大写处理（先排除Windows绝对路径（比如D:\））
+		if (!(/^[a-zA-Z]:[\\\/]/.test(path))) {
+			const firstChar = path.charAt(0);
+			path = (firstChar.toLowerCase() === firstChar.toUpperCase()) ? path : firstChar.toUpperCase() + path.slice(1);
+		}
 		return path + ':' + Math.round(line).toString();
 	}
 
